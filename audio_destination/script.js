@@ -73,10 +73,6 @@ function sendMessage(senderId, data) {
  msg.remove();
 }
 
-function enableIPButton() {
-
-}
-
 function readMessage(data) {
  var msg = JSON.parse(data.val().message);
  var sender = data.val().sender;
