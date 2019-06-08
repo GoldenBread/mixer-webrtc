@@ -46,31 +46,46 @@ connection.onstream = function(event) {
     document.body.appendChild( event.mediaElement );
 };
 
+//Functions
+function sendStreamToUser(userid) {
+    console.log('==> Sharing audio to ' + userid);
+    connection.peers[userid].addStream({
+        audio: true,
+        oneway: true,
+        streamCallback: function(stream) {
+            console.log('==> Audio successfully shared to ' + userid);
+            console.log(stream);
+        }
+    });
+}
+
+function isDestinationUser(userid) {
+    return userid.substring(0, 11) == "destination";
+}
+//
+
 connection.onSettingLocalDescription = function(event) {
     console.log("onSettingLocalDescription");
     console.log(event);
-    if (event.connectionDescription && event.userid.substring(0, 11) == "destination") {
+    if (event.connectionDescription && isDestinationUser(event.userid)) {
         console.log("Destination user found adding stream: " + event.userid);
         console.log(connection);
-        connection.peers[event.userid].addStream({
-            audio: true,
-            oneway: true
-        });
+        sendStreamToUser(event.userid);
     }
 };
 
+
 connection.onNewParticipant = function(participantId, userPreferences) {//override de la fonction de base new participant qui semble ajouter/partager le stream de tous les users qui join
   console.log(participantId);
+  if (isDestinationUser(participantId)) {
+      console.log('isDestination');
+      sendStreamToUser(participantId);
+  }
 };
 
 var predefinedRoomId = '437829';
 
 window.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('btn-open-room').onclick = function() {
-      this.disabled = true;
-      connection.open( predefinedRoomId );
-  };
-  
   document.getElementById('btn-join-room').onclick = function() {
       this.disabled = true;
       connection.join( predefinedRoomId);
