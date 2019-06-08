@@ -24,40 +24,10 @@ connection.userid = 'source-' + connection.userid;
 
 connection.session = {
     oneway: true,
-    video: false
 };
 
 connection.dontCaptureUserMedia = true;
 connection.dontGetRemoteStream = true;
-
-var BandwidthHandler = connection.BandwidthHandler;
-connection.bandwidth = {
-	audio: 510,
-	video: 256,
-	screen: 300
-};
-connection.processSdp = function(sdp) {
-    sdp = BandwidthHandler.setApplicationSpecificBandwidth(sdp, connection.bandwidth, !!connection.session.screen);
-    sdp = BandwidthHandler.setVideoBitrates(sdp, {
-        min: connection.bandwidth.video,
-        max: connection.bandwidth.video
-    });
-
-    sdp = BandwidthHandler.setOpusAttributes(sdp);
-
-    sdp = BandwidthHandler.setOpusAttributes(sdp, {
-        'stereo': 1,
-        //'sprop-stereo': 1,
-        'maxaveragebitrate': connection.bandwidth.audio * 1000 * 8,
-        'maxplaybackrate': connection.bandwidth.audio * 1000 * 8,
-        //'cbr': 1,
-        //'useinbandfec': 1,
-        // 'usedtx': 1,
-        'maxptime': 3
-    });
-
-    return sdp;
-};
 
 //UserMedia WebRTC natif
 connection.mediaConstraints = {
@@ -87,12 +57,8 @@ connection.onstream = function(event) {
     console.log("EVENT " + event.streamid);
     if (event.userid != connection.userid) {
         connection.removeStream(event.streamid);
-    } else {
     }
     document.body.appendChild( event.mediaElement );
-    //} else {
-
-    //}
 };
 
 connection.onSettingLocalDescription = function(event) {
@@ -110,18 +76,7 @@ connection.onSettingLocalDescription = function(event) {
     }
 };
 
-
-connection.beforeAddingStream = function(stream, peer) {
-    console.log("BeforeAddingStream");
-    console.log(peer.userId);
-    
-    return stream; // otherwise allow RTCMultiConnection to share this stream with remote users
-};
-
 connection.onNewParticipant = function(participantId, userPreferences) {//override de la fonction de base new participant qui semble ajouter le stream de tous les users qui join
-    /*if (participantId.substring(0, 6) == "source") {
-        //connection.deletePeer(participantId);
-    }*/
 };
 
 var predefinedRoomId = '437829';

@@ -6,8 +6,6 @@
     </head>
     <button id="btn-open-room">Open Room</button>
     <button id="btn-join-room">Join Room</button><hr>
-    <button id="checkMediaStream">Check media stream</button><hr>
-    <button id="muttee">Mute</button><hr>
     <body>
     </body>
 </html>
@@ -29,13 +27,9 @@ connection.session = {
 
 connection.dontCaptureUserMedia = true;
 
-var localStream = null;
-
 var BandwidthHandler = connection.BandwidthHandler;
 connection.bandwidth = {
-	audio: 510,
-	video: 256,
-	screen: 300
+	audio: 510
 };
 connection.processSdp = function(sdp) {
     sdp = BandwidthHandler.setApplicationSpecificBandwidth(sdp, connection.bandwidth, !!connection.session.screen);
@@ -48,12 +42,8 @@ connection.processSdp = function(sdp) {
 
     sdp = BandwidthHandler.setOpusAttributes(sdp, {
         'stereo': 1,
-        //'sprop-stereo': 1,
         'maxaveragebitrate': connection.bandwidth.audio * 1000 * 8,
         'maxplaybackrate': connection.bandwidth.audio * 1000 * 8,
-        //'cbr': 1,
-        //'useinbandfec': 1,
-        // 'usedtx': 1,
         'maxptime': 3
     });
 
@@ -62,9 +52,7 @@ connection.processSdp = function(sdp) {
 
 connection.mediaConstraints = {
     audio: true,
-    video: false
 };
-
 
 connection.iceServers = [];
 
@@ -74,15 +62,7 @@ connection.sdpConstraints.mandatory = {
 };
 
 connection.onstream = function(event) {
-
-    console.log("new STREAM");
-    console.log(event);
-    if (event.userid != connection.userid) {
-        document.body.appendChild( event.mediaElement );
-    } else {
-        console.log("DIsABLING...");
-        //event.stream.stop();
-    }
+    document.body.appendChild( event.mediaElement );
 };
 
 
@@ -96,25 +76,6 @@ document.getElementById('btn-open-room').onclick = function() {
 document.getElementById('btn-join-room').onclick = function() {
     this.disabled = true;
     connection.join( predefinedRoomId );
-};
-
-document.getElementById('checkMediaStream').onclick = function() {
-    console.log("checkMediaStream");
-    
-    connection.streamEvents.selectAll({
-    local: true
-    }).forEach(function(localStreamEvent) {
-        console.log(localStreamEvent.stream)
-    });
-};
-
-document.getElementById('muttee').onclick = function() {
-    connection.streamEvents.selectAll({
-        local: true
-    }).forEach(function(localStreamEvent) {
-        console.log(localStreamEvent.stream)
-        localStreamEvent.stream.stop();
-    });
 };
 
 </script>
