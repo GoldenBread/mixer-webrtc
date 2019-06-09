@@ -88,6 +88,6 @@ var predefinedRoomId = '437829';
 window.addEventListener("DOMContentLoaded", function() {
   document.getElementById('btn-join-room').onclick = function() {
       this.disabled = true;
-      connection.join( predefinedRoomId);
+      connection.openOrJoin( predefinedRoomId);
   };
 }, false);

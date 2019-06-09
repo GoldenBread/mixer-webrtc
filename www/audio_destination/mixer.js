@@ -48,11 +48,6 @@ connection.sdpConstraints.mandatory = {
     OfferToReceiveVideo: false
 };
 
-connection.onstream = function(event) {
-    document.body.appendChild( event.mediaElement );
-};
-
-
 var predefinedRoomId = '437829';
 
 window.addEventListener("DOMContentLoaded", function() {
